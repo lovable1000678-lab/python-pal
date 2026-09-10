@@ -6,8 +6,8 @@ import { findAnswer } from "./nlp";
 export type AskResponse = {
   matched: boolean;
   answer: string;
-  topic?: string;
-  code?: string;
+  topic?: string | undefined;
+  code?: string | undefined;
   confidence: number;
   suggestions: string[];
 };

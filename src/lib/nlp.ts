@@ -140,7 +140,10 @@ export function findAnswer(question: string): MatchResult {
     return {
       matched: false,
       confidence,
-      suggestions: scored.slice(0, 3).map((s) => s.entry.questions[0]),
+      suggestions: scored
+        .slice(0, 3)
+        .map((s) => s.entry.questions[0])
+        .filter((q): q is string => Boolean(q)),
     };
   }
 
@@ -151,6 +154,7 @@ export function findAnswer(question: string): MatchResult {
     suggestions: scored
       .slice(1, 3)
       .filter((s) => s.score > 0.15)
-      .map((s) => s.entry.questions[0]),
+      .map((s) => s.entry.questions[0])
+      .filter((q): q is string => Boolean(q)),
   };
 }
