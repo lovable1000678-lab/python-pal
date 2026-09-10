@@ -23,11 +23,18 @@ export const askQuestion = createServerFn({ method: "POST" })
     const result = findAnswer(data.question);
 
     if (!result.matched || !result.entry) {
+      const weak = result.confidence < 0.12;
       return {
         matched: false,
         answer: FALLBACK,
         confidence: result.confidence,
-        suggestions: result.suggestions,
+        suggestions: weak
+          ? [
+              "What is a list comprehension?",
+              "How do I handle exceptions?",
+              "What is __init__ and self?",
+            ]
+          : result.suggestions,
       };
     }
 
