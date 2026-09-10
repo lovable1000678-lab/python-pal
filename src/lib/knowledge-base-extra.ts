@@ -291,10 +291,11 @@ export const extraKnowledge: KbEntry[] = [
     topic: "Performance",
     questions: [
       "How do I make Python code faster?",
-      "Why is my loop slow?",
+      "Why is my loop taking so long?",
       "How do I measure execution time?",
+      "How do I optimize my code?",
     ],
-    keywords: ["fast", "slow", "performance", "optimize", "time", "timeit", "cache"],
+    keywords: ["fast", "faster", "performance", "optimize", "timeit", "cache", "speed up"],
     answer:
       "Pick better data structures first: sets and dicts give O(1) lookups where a list scan is O(n). Prefer comprehensions and built-ins like sum or join over manual loops, cache repeated pure calls with functools.lru_cache, and measure with timeit before optimizing.",
     code: "import timeit, functools\n\n@functools.lru_cache(maxsize=None)\ndef fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\n\ntimeit.timeit(lambda: fib(30), number=10)",
