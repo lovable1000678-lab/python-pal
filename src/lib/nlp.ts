@@ -149,7 +149,7 @@ function editDistance(a: string, b: string, max: number): number {
 /** Snap a misspelled word onto the closest known term ("yeild" -> "yield"). */
 function correctToken(token: string): string {
   if (df.has(token) || token.length < 4) return token;
-  const max = token.length <= 6 ? 1 : 2;
+  const max = token.length <= 4 ? 1 : 2;
   let best = token;
   let bestScore = max + 1;
   for (const term of vocabulary) {
