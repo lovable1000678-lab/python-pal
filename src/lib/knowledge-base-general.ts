@@ -162,12 +162,16 @@ export const generalKnowledge: KbEntry[] = [
     questions: [
       "Who are you?",
       "What can you do?",
+      "What are your capabilities?",
+      "How can you help me?",
+      "What do you know?",
       "What questions can I ask?",
       "Hello",
       "Hi there",
       "Help",
     ],
-    keywords: ["you", "bot", "assistant", "help", "hello", "hi", "what can"],
+    keywords: ["you", "bot", "assistant", "help", "hello", "hi", "hey",
+      "capabilities", "know", "do", "chatbot", "pyquery"],
     answer:
       "I am PyQuery, a Python question-answering assistant. I match your question against a built-in Python knowledge base — no external AI — and return the closest answer with its topic and match score. Ask me about syntax, data types, lists, dictionaries, loops, functions, classes, files, errors, libraries, or general programming and learning advice.",
   },
