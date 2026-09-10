@@ -48,6 +48,18 @@ export const generalKnowledge: KbEntry[] = [
       "C and C++ compile straight to machine code and give you manual memory control, so they run much faster but take far longer to write and debug. Python is interpreted and manages memory for you, trading speed for productivity. You do not need C first — most people start with Python and reach for C extensions or libraries like NumPy when a specific part needs to be fast.",
   },
   {
+    id: "gen-why-python-slow",
+    topic: "Programming general",
+    questions: [
+      "Why is Python slow?",
+      "Why is Python slower than other languages?",
+      "Is Python a slow language?",
+    ],
+    keywords: ["slow", "slower", "speed", "interpreted", "gil", "bytecode"],
+    answer:
+      "Python is slow mainly because it is interpreted rather than compiled: each line is turned into bytecode and executed by a virtual machine, every value is a full object with type information checked at run time, and the Global Interpreter Lock stops plain threads from using several CPU cores at once. In practice this rarely matters — the heavy work usually happens inside NumPy, pandas, or other libraries written in C, and you can move hot code into C extensions, PyPy, or multiprocessing when speed really counts.",
+  },
+  {
     id: "gen-python-vs-js",
     topic: "Programming general",
     questions: [
