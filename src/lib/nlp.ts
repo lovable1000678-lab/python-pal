@@ -125,6 +125,27 @@ function trigramSimilarity(a: Set<string>, b: Set<string>): number {
   return shared / a.size;
 }
 
+/** Vocabulary of every term the knowledge base actually uses. */
+const vocabulary = [...df.keys()];
+const vocabTrigrams = new Map(vocabulary.map((term) => [term, trigrams(term)]));
+
+/** Snap a misspelled word onto the closest known term ("dictionry" -> "dictionary"). */
+function correctToken(token: string): string {
+  if (df.has(token) || token.length < 4) return token;
+  const tg = trigrams(token);
+  let best = token;
+  let bestScore = 0.55;
+  for (const term of vocabulary) {
+    if (Math.abs(term.length - token.length) > 3) continue;
+    const score = trigramSimilarity(tg, vocabTrigrams.get(term)!);
+    if (score > bestScore) {
+      bestScore = score;
+      best = term;
+    }
+  }
+  return best;
+}
+
 export type MatchResult = {
   matched: boolean;
   confidence: number;
@@ -135,7 +156,7 @@ export type MatchResult = {
 export const CONFIDENCE_THRESHOLD = 0.2;
 
 export function findAnswer(question: string): MatchResult {
-  const rawTokens = tokenize(question);
+  const rawTokens = tokenize(question).map(correctToken);
   // Understand everyday phrasing by expanding to knowledge-base vocabulary.
   const queryTokens = expandTokens(rawTokens);
   const qtf = new Map<string, number>();
