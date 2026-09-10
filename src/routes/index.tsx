@@ -99,7 +99,7 @@ function ChatPage() {
           text: res.answer,
           topic: res.topic,
           code: res.code,
-          confidence: res.confidence,
+          confidence: res.matched ? res.confidence : undefined,
           chips: res.matched ? undefined : res.suggestions,
         },
       ]);
