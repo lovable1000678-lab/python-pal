@@ -78,6 +78,18 @@
 
 :root {
   --radius: 0.625rem;
+  --brand: oklch(0.546 0.215 262.9);
+  --brand-hover: oklch(0.494 0.213 263.5);
+  --accent-warm: oklch(0.777 0.155 74.2);
+  --ink: oklch(0.309 0.032 261.7);
+  --paper: oklch(0.984 0.003 247.9);
+  --surface: oklch(1 0 0);
+  --line: oklch(0.929 0.013 255.5);
+  --line-soft: oklch(0.968 0.007 247.9);
+  --subtle: oklch(0.554 0.046 257.4);
+  --body: oklch(0.446 0.043 257.3);
+  --faint: oklch(0.704 0.04 256.8);
+  --online: oklch(0.696 0.17 162.5);
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
