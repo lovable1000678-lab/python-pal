@@ -38,8 +38,12 @@ export const generalKnowledge: KbEntry[] = [
       "Python vs C++ which is better?",
       "Why is Python slower than C?",
       "Should I learn C before Python?",
+      "Should I learn C++ or Python?",
+      "Is C++ better than Python?",
+      "Difference between Python and C++",
     ],
-    keywords: ["c", "c++", "slow", "fast", "compiled", "interpreted"],
+    keywords: ["c", "c++", "cpp", "slow", "fast", "compiled", "interpreted",
+      "memory", "performance", "learn"],
     answer:
       "C and C++ compile straight to machine code and give you manual memory control, so they run much faster but take far longer to write and debug. Python is interpreted and manages memory for you, trading speed for productivity. You do not need C first — most people start with Python and reach for C extensions or libraries like NumPy when a specific part needs to be fast.",
   },
