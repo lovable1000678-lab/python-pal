@@ -1,3 +1,5 @@
+import { extraKnowledge } from "./knowledge-base-extra";
+
 export type KbEntry = {
   id: string;
   topic: string;
@@ -7,7 +9,7 @@ export type KbEntry = {
   code?: string;
 };
 
-export const knowledgeBase: KbEntry[] = [
+const coreKnowledge: KbEntry[] = [
   {
     id: "basics-what-is-python",
     topic: "Python basics",
@@ -345,3 +347,5 @@ export const knowledgeBase: KbEntry[] = [
     code: "a = [1, 2]\nb = [1, 2]\na == b   # True\na is b   # False\nx is None  # correct identity check",
   },
 ];
+
+export const knowledgeBase: KbEntry[] = [...coreKnowledge, ...extraKnowledge];
