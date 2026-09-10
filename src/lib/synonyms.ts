@@ -170,7 +170,7 @@ export const SYNONYMS: Record<string, string[]> = {
 export function expandTokens(tokens: string[]): string[] {
   const out = [...tokens];
   for (const t of tokens) {
-    const extra = SYNONYMS[t];
+    const extra = SYNONYMS[t] ?? SYNONYMS[t.replace(/e$/, "")] ?? SYNONYMS[`${t}e`];
     if (extra) out.push(...extra);
   }
   return out;

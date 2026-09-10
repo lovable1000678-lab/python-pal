@@ -106,6 +106,25 @@ function bestPhraseOverlap(queryTokens: string[], entry: KbEntry): number {
   return best;
 }
 
+/** Character trigrams — gives typo tolerance ("dictionry", "funtion"). */
+function trigrams(text: string): Set<string> {
+  const s = ` ${text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()} `;
+  const out = new Set<string>();
+  for (let i = 0; i < s.length - 2; i += 1) out.add(s.slice(i, i + 3));
+  return out;
+}
+
+const docTrigrams = docs.map((doc) =>
+  trigrams([doc.entry.questions.join(" "), doc.entry.topic, (doc.entry.keywords ?? []).join(" ")].join(" ")),
+);
+
+function trigramSimilarity(a: Set<string>, b: Set<string>): number {
+  if (a.size === 0 || b.size === 0) return 0;
+  let shared = 0;
+  for (const g of a) if (b.has(g)) shared += 1;
+  return shared / a.size;
+}
+
 export type MatchResult = {
   matched: boolean;
   confidence: number;
@@ -113,10 +132,12 @@ export type MatchResult = {
   suggestions: string[];
 };
 
-export const CONFIDENCE_THRESHOLD = 0.34;
+export const CONFIDENCE_THRESHOLD = 0.2;
 
 export function findAnswer(question: string): MatchResult {
-  const queryTokens = tokenize(question);
+  const rawTokens = tokenize(question);
+  // Understand everyday phrasing by expanding to knowledge-base vocabulary.
+  const queryTokens = expandTokens(rawTokens);
   const qtf = new Map<string, number>();
   for (const t of queryTokens) qtf.set(t, (qtf.get(t) ?? 0) + 1);
   const qv = vector(qtf);
@@ -124,12 +145,18 @@ export function findAnswer(question: string): MatchResult {
   for (const value of qv.values()) qnorm += value * value;
   qnorm = Math.sqrt(qnorm) || 1;
 
+  const qgrams = trigrams(question);
+
   const scored = docVectors
-    .map(({ doc, v, norm }) => {
+    .map(({ doc, v, norm }, i) => {
       const sim = queryTokens.length ? cosine(qv, qnorm, v, norm) : 0;
-      const overlap = bestPhraseOverlap(queryTokens, doc.entry);
-      // Blend corpus similarity with direct phrasing overlap.
-      const score = 0.65 * sim + 0.35 * overlap;
+      const overlap = Math.max(
+        bestPhraseOverlap(rawTokens, doc.entry),
+        bestPhraseOverlap(queryTokens, doc.entry),
+      );
+      const fuzzy = trigramSimilarity(qgrams, docTrigrams[i] ?? new Set());
+      // Blend corpus similarity, direct phrasing overlap, and typo tolerance.
+      const score = 0.55 * sim + 0.3 * overlap + 0.15 * fuzzy;
       return { entry: doc.entry, score };
     })
     .sort((a, b) => b.score - a.score);
@@ -154,7 +181,7 @@ export function findAnswer(question: string): MatchResult {
     entry: top.entry,
     suggestions: scored
       .slice(1, 3)
-      .filter((s) => s.score > 0.15)
+      .filter((s) => s.score > 0.12)
       .map((s) => s.entry.questions[0])
       .filter((q): q is string => Boolean(q)),
   };
