@@ -348,4 +348,8 @@ const coreKnowledge: KbEntry[] = [
   },
 ];
 
-export const knowledgeBase: KbEntry[] = [...coreKnowledge, ...extraKnowledge];
+export const knowledgeBase: KbEntry[] = [
+  ...coreKnowledge,
+  ...extraKnowledge,
+  ...generalKnowledge,
+];
