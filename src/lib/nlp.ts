@@ -127,29 +127,32 @@ function trigramSimilarity(a: Set<string>, b: Set<string>): number {
 
 /** Vocabulary of every term the knowledge base actually uses. */
 const vocabulary = [...df.keys()];
-/** Edit distance, capped for speed. */
+/** Damerau-Levenshtein distance (counts transpositions like "yeild"), capped. */
 function editDistance(a: string, b: string, max: number): number {
   if (Math.abs(a.length - b.length) > max) return max + 1;
-  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  const rows: number[][] = [Array.from({ length: b.length + 1 }, (_, i) => i)];
   for (let i = 1; i <= a.length; i += 1) {
     const row = [i];
     let rowMin = i;
     for (let j = 1; j <= b.length; j += 1) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      const value = Math.min(row[j - 1]! + 1, prev[j]! + 1, prev[j - 1]! + cost);
+      let value = Math.min(row[j - 1]! + 1, rows[i - 1]![j]! + 1, rows[i - 1]![j - 1]! + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        value = Math.min(value, rows[i - 2]![j - 2]! + 1);
+      }
       row.push(value);
       rowMin = Math.min(rowMin, value);
     }
     if (rowMin > max) return max + 1;
-    prev = row;
+    rows.push(row);
   }
-  return prev[b.length]!;
+  return rows[a.length]![b.length]!;
 }
 
 /** Snap a misspelled word onto the closest known term ("yeild" -> "yield"). */
 function correctToken(token: string): string {
   if (df.has(token) || token.length < 4) return token;
-  const max = token.length <= 4 ? 1 : 2;
+  const max = token.length <= 6 ? 1 : 2;
   let best = token;
   let bestScore = max + 1;
   for (const term of vocabulary) {
