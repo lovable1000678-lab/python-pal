@@ -1,4 +1,5 @@
 import { knowledgeBase, type KbEntry } from "./knowledge-base";
+import { expandTokens } from "./synonyms";
 
 const STOPWORDS = new Set([
   "a","an","the","is","are","was","were","be","been","being","do","does","did","doing",
