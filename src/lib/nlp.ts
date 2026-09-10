@@ -24,15 +24,17 @@ function stem(word: string): string {
   return w;
 }
 
-export function tokenize(text: string): string[] {
-  return text
+export function tokenize(text: string, keepStopwords = false): string[] {
+  const words = text
     .toLowerCase()
     .replace(/[^a-z0-9_+\-*/=<>.\s]/g, " ")
     .split(/\s+/)
-    .filter(Boolean)
-    .filter((t) => !STOPWORDS.has(t))
-    .map(stem)
-    .filter((t) => t.length > 1);
+    .filter(Boolean);
+  const kept = keepStopwords ? words : words.filter((t) => !STOPWORDS.has(t));
+  const out = kept.map(stem).filter((t) => t.length > 1);
+  // Questions made only of common words ("what can you do") still deserve a match.
+  if (out.length === 0 && !keepStopwords) return tokenize(text, true);
+  return out;
 }
 
 type Doc = { entry: KbEntry; tf: Map<string, number>; tokens: string[] };
