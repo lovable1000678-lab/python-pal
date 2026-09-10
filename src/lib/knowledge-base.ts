@@ -1,4 +1,5 @@
 import { extraKnowledge } from "./knowledge-base-extra";
+import { generalKnowledge } from "./knowledge-base-general";
 
 export type KbEntry = {
   id: string;
