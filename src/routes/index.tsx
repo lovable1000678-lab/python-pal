@@ -34,8 +34,8 @@ type Message =
       topic?: string | undefined;
       code?: string | undefined;
       confidence?: number | undefined;
-      chips?: string[];
-      error?: boolean;
+      chips?: string[] | undefined;
+      error?: boolean | undefined;
     };
 
 const STARTER_CHIPS = [
