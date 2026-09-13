@@ -20,6 +20,7 @@ export type Database = {
           entry_id: string
           id: string
           question: string
+          receipt_id: string | null
           tokens: string[]
           vote: number
         }
@@ -28,6 +29,7 @@ export type Database = {
           entry_id: string
           id?: string
           question: string
+          receipt_id?: string | null
           tokens?: string[]
           vote: number
         }
@@ -36,6 +38,7 @@ export type Database = {
           entry_id?: string
           id?: string
           question?: string
+          receipt_id?: string | null
           tokens?: string[]
           vote?: number
         }
