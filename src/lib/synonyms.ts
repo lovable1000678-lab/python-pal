@@ -93,7 +93,6 @@ export const SYNONYMS: Record<string, string[]> = {
   // io / files
   file: ["file", "open", "read", "write"],
   save: ["write", "file", "save"],
-  disk: ["file", "write", "save"],
   load: ["read", "load", "file", "open"],
   open: ["open", "file"],
   folder: ["directory", "folder", "path"],
