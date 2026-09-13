@@ -1,3 +1,3 @@
-- [ ] Topic-aware ranking with bounded feedback weights.
-- [ ] Persistent verified answer votes and chat controls.
-- [ ] Validate ranking and vote flow.
+- [x] Topic-aware ranking with bounded feedback weights.
+- [x] Persistent verified answer votes and chat controls.
+- [x] Validate ranking and vote flow.
