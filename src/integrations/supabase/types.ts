@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      answer_feedback: {
+        Row: {
+          created_at: string
+          entry_id: string
+          id: string
+          question: string
+          tokens: string[]
+          vote: number
+        }
+        Insert: {
+          created_at?: string
+          entry_id: string
+          id?: string
+          question: string
+          tokens?: string[]
+          vote: number
+        }
+        Update: {
+          created_at?: string
+          entry_id?: string
+          id?: string
+          question?: string
+          tokens?: string[]
+          vote?: number
+        }
+        Relationships: []
+      }
+      feedback_token_weights: {
+        Row: {
+          entry_id: string
+          token: string
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          entry_id: string
+          token: string
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          entry_id?: string
+          token?: string
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
