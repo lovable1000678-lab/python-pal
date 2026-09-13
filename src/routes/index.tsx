@@ -2,12 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
+import { AnswerVote } from "@/components/AnswerVote";
 import { CodeBlock } from "@/components/CodeBlock";
 import { askQuestion } from "@/lib/ask.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "PyQuery — Personal Python Answer Engine" },
       {
         name: "description",
@@ -36,6 +39,7 @@ type Message =
       confidence?: number | undefined;
       chips?: string[] | undefined;
       error?: boolean | undefined;
+      receipt?: string | undefined;
     };
 
 const STARTER_CHIPS = [
@@ -97,6 +101,7 @@ function ChatPage() {
           id: `b-${Date.now()}`,
           role: "bot",
           text: res.answer,
+          receipt: res.receipt,
           topic: res.topic,
           code: res.code,
           confidence: res.matched ? res.confidence : undefined,
@@ -198,6 +203,7 @@ function ChatPage() {
                       {m.text}
                     </p>
                     {m.code && <CodeBlock code={m.code} />}
+                    {m.receipt && <AnswerVote receipt={m.receipt} />}
                     {m.chips && m.chips.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-2">
                         {m.chips.map((chip) => (
