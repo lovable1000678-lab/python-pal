@@ -4,6 +4,7 @@ import { z } from "zod";
 import { findAnswer } from "./nlp";
 
 export type AskResponse = {
+  receipt?: string | undefined;
   matched: boolean;
   answer: string;
   topic?: string | undefined;
@@ -20,11 +21,16 @@ export const askQuestion = createServerFn({ method: "POST" })
     z.object({ question: z.string().min(1).max(500) }).parse(data),
   )
   .handler(async ({ data }): Promise<AskResponse> => {
-    const result = findAnswer(data.question);
+    const { learnedWeights, issueReceipt } = await import('./feedback.server');
+    const weights = await learnedWeights(data.question).catch(() => []);
+    const result = findAnswer(data.question, weights);
+    let receipt: string | undefined;
+    try { receipt = issueReceipt(data.question, result.entry?.id ?? '__fallback__'); } catch { /* Answers remain available when feedback is unavailable. */ }
 
     if (!result.matched || !result.entry) {
       const weak = result.confidence < 0.12;
       return {
+        receipt,
         matched: false,
         answer: FALLBACK,
         confidence: result.confidence,
@@ -39,6 +45,7 @@ export const askQuestion = createServerFn({ method: "POST" })
     }
 
     return {
+      receipt,
       matched: true,
       answer: result.entry.answer,
       topic: result.entry.topic,

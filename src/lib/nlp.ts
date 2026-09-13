@@ -178,7 +178,9 @@ export type MatchResult = {
 
 export const CONFIDENCE_THRESHOLD = 0.2;
 
-export function findAnswer(question: string): MatchResult {
+export type LearnedWeight = { entry_id: string; token: string; weight: number };
+
+export function findAnswer(question: string, weights: LearnedWeight[] = []): MatchResult {
   const rawTokens = tokenize(question).map(correctToken);
   // Understand everyday phrasing by expanding to knowledge-base vocabulary.
   const queryTokens = expandTokens(rawTokens);
@@ -200,7 +202,14 @@ export function findAnswer(question: string): MatchResult {
       );
       const fuzzy = trigramSimilarity(qgrams, docTrigrams[i] ?? new Set());
       // Blend corpus similarity, direct phrasing overlap, and typo tolerance.
-      const score = 0.55 * sim + 0.3 * overlap + 0.15 * fuzzy;
+      const base = 0.55 * sim + 0.3 * overlap + 0.15 * fuzzy;
+      const topicTerms = new Set(tokenize(doc.entry.topic));
+      const topic = queryTokens.filter(t => topicTerms.has(t)).length / Math.max(1, queryTokens.length);
+      const relevant = weights.filter(w => w.entry_id === doc.entry.id && rawTokens.includes(w.token));
+      const learned = relevant.reduce((sum, w) => sum + Math.max(-5, Math.min(5, w.weight)), 0) / Math.max(1, new Set(rawTokens).size);
+      // Feedback cannot rescue an unrelated candidate or overwhelm retrieval evidence.
+      const adjustment = base >= CONFIDENCE_THRESHOLD ? Math.max(-0.08, Math.min(0.08, learned * 0.016)) : 0;
+      const score = base + 0.1 * topic + adjustment;
       return { entry: doc.entry, score };
     })
     .sort((a, b) => b.score - a.score);
